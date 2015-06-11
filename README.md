@@ -19,6 +19,7 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
 - 1 Docker in Docker (DIND) Jenkins slave
   - slaveDocker1
 - default {hostname} is `jenkins.beedemo.local`, if you want to change this then you will have to update the `docker-compose.yml` file `ambassador` `links` mapping to match your hostname (this is required to have CJOC/CJE breadcrumbs and JNLP connectivity)
+
 ###Instructions
 - install VirtualBox 4.3.26 or later
 - install [Docker Machine](http://docs.docker.com/machine/#installation)
