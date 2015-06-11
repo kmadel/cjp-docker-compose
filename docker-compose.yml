@@ -1,0 +1,144 @@
+joc1:
+    image: kmadel/jenkins-operations-center:1.609.1.1-beta-2
+    command: --prefix=""
+    ports:
+        - "81:8080"
+    volumes:
+        - data:/data
+    links:
+        - slave1
+        - slave2
+        - slaveDocker1
+    environment:
+        - JENKINS_HOME=/data/var/lib/jenkins/joc
+    restart: always
+joc2:
+    image: kmadel/jenkins-operations-center:1.609.1.1-beta-2
+    command: --prefix=""
+    ports:
+        - "82:8080"
+    volumes_from:
+        - joc1
+    links:
+        - slave1
+        - slave2
+        - slaveDocker1
+    environment:
+        - JENKINS_HOME=/data/var/lib/jenkins/joc
+    restart: always
+apiTeam1:
+    image: kmadel/jenkins-enterprise:1.609.1.1-beta-2
+    ports:
+        - "83:8080"
+    volumes_from:
+        - joc1
+    links:
+        - ambassador:jenkins.beedemo.local
+        - slave1
+        - slave2
+        - slaveDocker1
+    environment:
+        - JENKINS_HOME=/data/var/lib/jenkins/api-team
+        - JENKINS_PREFIX=/api-team
+    restart: always
+apiTeam2:
+    image: kmadel/jenkins-enterprise:1.609.1.1-beta-2
+    ports:
+        - "84:8080"
+    volumes_from:
+        - joc1
+        - apiTeam1
+    links:
+        - ambassador:jenkins.beedemo.local
+        - slave1
+        - slave2
+        - slaveDocker1
+    environment:
+        - JENKINS_HOME=/data/var/lib/jenkins/api-team
+        - JENKINS_PREFIX=/api-team
+    restart: always
+mobileTeam1:
+    image: kmadel/jenkins-enterprise:1.609.1.1-beta-2
+    ports:
+        - "85:8080"
+    volumes_from:
+        - joc1
+    links:
+        - ambassador:jenkins.beedemo.local
+        - slave1
+        - slave2
+        - slaveDocker1
+    environment:
+        - JENKINS_HOME=/data/var/lib/jenkins/mobile-team
+        - JENKINS_PREFIX=/mobile-team
+    restart: always
+mobileTeam2:
+    image: kmadel/jenkins-enterprise:1.609.1.1-beta-2
+    ports:
+        - "86:8080"
+    volumes_from:
+        - joc1
+        - mobileTeam1
+    links:
+        - ambassador:jenkins.beedemo.local
+        - slave1
+        - slave2
+        - slaveDocker1
+    environment:
+        - JENKINS_HOME=/data/var/lib/jenkins/mobile-team
+        - JENKINS_PREFIX=/mobile-team
+    restart: always
+elasticsearch:
+    image: elasticsearch
+    volumes_from:
+        - joc1
+    restart: always
+proxy:
+    image: kmadel/haproxy:1.0
+    ports:
+        - "80:80"
+        - "9000:9000"
+        - "9200:9200"
+        - "4001:4001"
+    expose:
+        - "9200"
+        - "4001"
+    volumes_from:
+        - joc2
+        - apiTeam2
+        - mobileTeam2
+    volumes:
+        - data/haproxy:/haproxy-override
+    links:
+        - joc1
+        - joc2
+        - apiTeam1
+        - apiTeam2
+        - mobileTeam1
+        - mobileTeam2
+        - elasticsearch
+    restart: always
+ambassador:
+  image: cpuguy83/docker-grand-ambassador
+  volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+  command: -name local_proxy_1
+slave1:
+    image: kmadel/jenkins-slave:1.0
+    volumes:
+        - data:/data
+    restart: always
+slave2:
+    image: kmadel/jenkins-slave:1.0
+    volumes:
+        - data:/data
+    restart: always
+slaveDocker1:
+    image: tehranian/dind-jenkins-slave
+    volumes:
+        - data:/data
+    environment:
+        - PORT=1234
+    privileged: true
+    restart: always
+    
