@@ -9,10 +9,10 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
 - HA Proxy  - stats available at: http://{hostname}:9000
   - All CloudBees Jenkins instances are setup for HA via HA Proxy
 - elastic search to use with CJOC (optional, use embedded if you want to): http://{hostname}:9200
-- CJOC (HA) - availabe at http://{hostname}
+- CJOC - availabe at http://{hostname}
   - JNLP port: `4001`
 - CJE Client Master api-team: http://{hostname}/api-team/
-- Client Master (HA) mobile-team: http://{hostname}/mobile-team/
+- Client Master mobile-team: http://{hostname}/mobile-team/
 - 2 linux slaves with git installed, running ssh on port 22, Jenkins Home - /home/jenkins
   - slave1
   - slave2
@@ -48,12 +48,12 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
     - exit ssh and restart Docker Machine: `docker-machine restart`
 - Clone this repo anywhere under your `/Users` directory
 - If you would like to store your Jenkins `HOME` directory somewhere else you need to update the `docker-compose.yml` file:
-  - Update `data` under dnsdock -> volumes to point to where you want your Jenkins `HOME` directory. 
+  - Update `data` under `joc1`` -> `volumes` to point to where you want your Jenkins `HOME` directory. 
   NOTE: You could have several different directories configured for different demos and just change this to point to the demo you want to run.
 - Add entry that maps Docker Machine IP (`docker-machine ip beedemo-local`) to the hostname you are using in /etc/hosts: `192.168.99.100  jenkins.beedemo.local`
 - Start the docker containers in the Docker Compose file with: `docker-compose up -d`
 - Run `docker-compose ps` to make sure all of the containers are up
-- Now configure CJP
+- Now configure CJP:
   - connect masters
   - create slaves
   - create jobs
