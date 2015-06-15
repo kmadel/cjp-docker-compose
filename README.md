@@ -50,6 +50,7 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
 - If you would like to store your Jenkins `HOME` directory somewhere else you need to update the `docker-compose.yml` file:
   - Update `data` under `joc1`` -> `volumes` to point to where you want your Jenkins `HOME` directory. 
   NOTE: You could have several different directories configured for different demos and just change this to point to the demo you want to run.
+- VERY IMPORTANT: Update the `ambassador` `command: -name` value to use the fully qualified docker name for the proxy container - something like `{directory_container_dokcer_compose}_proxy_1`
 - Add entry that maps Docker Machine IP (`docker-machine ip beedemo-local`) to the hostname you are using in /etc/hosts: `192.168.99.100  jenkins.beedemo.local`
 - Start the docker containers in the Docker Compose file with: `docker-compose up -d`
 - Run `docker-compose ps` to make sure all of the containers are up
