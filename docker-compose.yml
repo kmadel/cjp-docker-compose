@@ -122,7 +122,7 @@ ambassador:
   image: cpuguy83/docker-grand-ambassador
   volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
-  command: -name local_proxy_1
+  command: -name {UPDATE_ME_TO_CONTAINING_DIRECTORY_NAME}_proxy_1
 slave1:
     image: kmadel/jenkins-slave:1.0
     volumes:
