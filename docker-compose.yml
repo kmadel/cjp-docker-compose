@@ -1,5 +1,5 @@
 joc1:
-    image: kmadel/jenkins-operations-center:1.609.1.1-beta-2
+    image: kmadel/jenkins-operations-center:1.609.1.1-RC
     command: --prefix=""
     ports:
         - "81:8080"
@@ -13,7 +13,7 @@ joc1:
         - JENKINS_HOME=/data/var/lib/jenkins/joc
     restart: always
 joc2:
-    image: kmadel/jenkins-operations-center:1.609.1.1-beta-2
+    image: kmadel/jenkins-operations-center:1.609.1.1-RC
     command: --prefix=""
     ports:
         - "82:8080"
@@ -27,7 +27,7 @@ joc2:
         - JENKINS_HOME=/data/var/lib/jenkins/joc
     restart: always
 apiTeam1:
-    image: kmadel/jenkins-enterprise:1.609.1.1-beta-2
+    image: kmadel/jenkins-enterprise:1.609.1.1-RC
     ports:
         - "83:8080"
     volumes_from:
@@ -42,7 +42,7 @@ apiTeam1:
         - JENKINS_PREFIX=/api-team
     restart: always
 apiTeam2:
-    image: kmadel/jenkins-enterprise:1.609.1.1-beta-2
+    image: kmadel/jenkins-enterprise:1.609.1.1-RC
     ports:
         - "84:8080"
     volumes_from:
@@ -58,7 +58,7 @@ apiTeam2:
         - JENKINS_PREFIX=/api-team
     restart: always
 mobileTeam1:
-    image: kmadel/jenkins-enterprise:1.609.1.1-beta-2
+    image: kmadel/jenkins-enterprise:1.609.1.1-RC
     ports:
         - "85:8080"
     volumes_from:
@@ -73,7 +73,7 @@ mobileTeam1:
         - JENKINS_PREFIX=/mobile-team
     restart: always
 mobileTeam2:
-    image: kmadel/jenkins-enterprise:1.609.1.1-beta-2
+    image: kmadel/jenkins-enterprise:1.609.1.1-RC
     ports:
         - "86:8080"
     volumes_from:
