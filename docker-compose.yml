@@ -89,7 +89,7 @@ mobileTeam2:
         - JENKINS_PREFIX=/mobile-team
     restart: always
 elasticsearch:
-    image: elasticsearch
+    image: elasticsearch:1.6.1
     volumes_from:
         - joc1
     restart: always
@@ -134,7 +134,7 @@ slave2:
         - data:/data
     restart: always
 slaveDocker1:
-    image: tehranian/dind-jenkins-slave
+    image: kmadel/dind-jenkins-slave:1.0
     volumes:
         - data:/data
     environment:
