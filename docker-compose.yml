@@ -4,7 +4,7 @@ joc1:
     ports:
         - "81:8080"
     volumes:
-        - data:/data
+        - ./data:/data
     links:
         - slave1
         - slave2
