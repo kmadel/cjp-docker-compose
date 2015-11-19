@@ -21,9 +21,8 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
 - default {hostname} is `jenkins.beedemo.local`, if you want to change this then you will have to update the `docker-compose.yml` file `ambassador` `links` mapping to match your hostname (this is required to have CJOC/CJE breadcrumbs and JNLP connectivity)
 
 ###Instructions
-- install VirtualBox 4.3.26 or later
-- install [Docker Machine](http://docs.docker.com/machine/#installation)
-- install [Docker Compose](https://docs.docker.com/compose/install/)
+- install Docker Toolbox (https://www.docker.com/docker-toolbox)
+   Note: Docker Toolbox by default will create a docker-machine. Recommend that you stop the default and create a new machine with virtual memory allocated to it. 
 - create a Docker Machine (I use beedemo-local as `{machine_name}`)
   - `docker-machine create --driver=virtualbox --virtualbox-memory=4096 {machine_name}`
   - set env for newly created machine: `eval "$(docker-machine env)"`
@@ -50,10 +49,13 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
 - If you would like to store your Jenkins `HOME` directory somewhere else you need to update the `docker-compose.yml` file:
   - Update `data` under `joc1`` -> `volumes` to point to where you want your Jenkins `HOME` directory. 
   NOTE: You could have several different directories configured for different demos and just change this to point to the demo you want to run.
-- VERY IMPORTANT: Update the `ambassador` `command: -name` value to use the fully qualified docker name for the proxy container - something like `{directory_container_dokcer_compose}_proxy_1`
+- VERY IMPORTANT: Update the `ambassador` `command: -name` value to use the fully qualified docker name for the proxy container - something like `{directory_container_docker_compose}_proxy_1`
+   Example: cjdockercompose_proxy_1
 - Add entry that maps Docker Machine IP (`docker-machine ip beedemo-local`) to the hostname you are using in /etc/hosts: `192.168.99.100  jenkins.beedemo.local`
 - Start the docker containers in the Docker Compose file with: `docker-compose up -d`
 - Run `docker-compose ps` to make sure all of the containers are up
+- Now Configure JOC:
+  - Under Manage Jenkins --> Configure Global Security. Update JNLP Port to 4001 and Fixed. 
 - Now configure CJP:
   - connect masters
   - create slaves
