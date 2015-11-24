@@ -1,0 +1,64 @@
+joc:
+    image: kmadel/jenkins-operations-center:1.609.14.1
+    expose:
+        - "2021"
+    volumes:
+        - ./data/joc:/var/jenkins_home
+    environment:
+        - JENKINS_JNLP_PORT=4001
+        - JENKINS_SSH_PORT=2021
+        - JENKINS_PREFIX=
+        - SSHD_HOST=jenkins.beedemo.local
+        - JENKINS_URL=http://jenkins.beedemo.local
+    restart: always
+apiTeam:
+    image: kmadel/jenkins-enterprise:1.609.14.1
+    ports:
+        - "83:8080"
+    expose:
+        - "2022"
+    volumes:
+        - ./data/api-team:/var/jenkins_home
+    environment:
+        - JENKINS_PREFIX=/api-team
+        - JENKINS_SSH_PORT=2022
+        - JENKINS_URL=http://jenkins.beedemo.local
+        - SSHD_HOST=jenkins.beedemo.local
+    restart: always
+mobileTeam:
+    image: kmadel/jenkins-enterprise:1.609.14.1
+    ports:
+        - "85:8080"
+    expose:
+        - "2023"
+    volumes:
+        - ./data/mobile-team:/var/jenkins_home
+    environment:
+        - JENKINS_PREFIX=/mobile-team
+        - JENKINS_SSH_PORT=2023
+        - JENKINS_URL=http://jenkins.beedemo.local
+        - SSHD_HOST=jenkins.beedemo.local
+    restart: always
+proxy:
+    image: kmadel/haproxy:1.0
+    container_name: jenkins.beedemo.local
+    ports:
+        - "80:80"
+        - "9000:9000"
+        - "4001:4001"
+        - "2021:2021"
+        - "2022:2022"
+        - "2023:2023"
+    expose:
+        - "4001"
+        - "2021"
+        - "2022"
+        - "2023"
+    volumes:
+        - ./data/haproxy:/haproxy-override
+    restart: always
+slave1:
+    image: kmadel/jenkins-slave:1.1
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    restart: always

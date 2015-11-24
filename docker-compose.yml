@@ -1,144 +1,65 @@
 joc1:
-    image: kmadel/jenkins-operations-center:1.609.3.1
-    command: --prefix=""
+    image: kmadel/jenkins-operations-center:1.609.14.1
     ports:
         - "81:8080"
-    volumes:
-        - ./data:/data
-    links:
-        - slave1
-        - slave2
-        - slaveDocker1
-    environment:
-        - JENKINS_HOME=/data/var/lib/jenkins/joc
-    restart: always
+    container_name: joc1
+    extends:
+        file: common.yml
+        service: joc
 joc2:
-    image: kmadel/jenkins-operations-center:1.609.3.1
-    command: --prefix=""
+    image: kmadel/jenkins-operations-center:1.609.14.1
     ports:
         - "82:8080"
+    container_name: joc2
+    extends:
+        file: common.yml
+        service: joc
     volumes_from:
         - joc1
-    links:
-        - slave1
-        - slave2
-        - slaveDocker1
-    environment:
-        - JENKINS_HOME=/data/var/lib/jenkins/joc
-    restart: always
-apiTeam1:
-    image: kmadel/jenkins-enterprise:1.609.3.1
-    ports:
-        - "83:8080"
-    volumes_from:
-        - joc1
-    links:
-        - ambassador:jenkins.beedemo.local
-        - slave1
-        - slave2
-        - slaveDocker1
-    environment:
-        - JENKINS_HOME=/data/var/lib/jenkins/api-team
-        - JENKINS_PREFIX=/api-team
-    restart: always
-apiTeam2:
-    image: kmadel/jenkins-enterprise:1.609.3.1
-    ports:
-        - "84:8080"
-    volumes_from:
-        - joc1
-        - apiTeam1
-    links:
-        - ambassador:jenkins.beedemo.local
-        - slave1
-        - slave2
-        - slaveDocker1
-    environment:
-        - JENKINS_HOME=/data/var/lib/jenkins/api-team
-        - JENKINS_PREFIX=/api-team
-    restart: always
-mobileTeam1:
-    image: kmadel/jenkins-enterprise:1.609.3.1
-    ports:
-        - "85:8080"
-    volumes_from:
-        - joc1
-    links:
-        - ambassador:jenkins.beedemo.local
-        - slave1
-        - slave2
-        - slaveDocker1
-    environment:
-        - JENKINS_HOME=/data/var/lib/jenkins/mobile-team
-        - JENKINS_PREFIX=/mobile-team
-    restart: always
-mobileTeam2:
-    image: kmadel/jenkins-enterprise:1.609.3.1
-    ports:
-        - "86:8080"
-    volumes_from:
-        - joc1
-        - mobileTeam1
-    links:
-        - ambassador:jenkins.beedemo.local
-        - slave1
-        - slave2
-        - slaveDocker1
-    environment:
-        - JENKINS_HOME=/data/var/lib/jenkins/mobile-team
-        - JENKINS_PREFIX=/mobile-team
-    restart: always
-elasticsearch:
-    image: elasticsearch:1.6.1
-    volumes_from:
-        - joc1
-    restart: always
+apiTeam:
+    image: kmadel/jenkins-enterprise:1.609.14.1
+    container_name: apiTeam
+    extends:
+        file: common.yml
+        service: apiTeam
+mobileTeam:
+    image: kmadel/jenkins-enterprise:1.609.14.1
+    container_name: mobileTeam
+    extends:
+        file: common.yml
+        service: mobileTeam
 proxy:
-    image: kmadel/haproxy:1.0
-    ports:
-        - "80:80"
-        - "9000:9000"
-        - "9200:9200"
-        - "4001:4001"
-    expose:
-        - "9200"
-        - "4001"
+    extends:
+        file: common.yml
+        service: proxy
+    #this is the magic sauce - 
+    #the default Docker networking will place an entry for each container into every container's /etc/hosts file
+    #the apiTeam and mobileTeam containers will get an entry that matches
+    container_name: jenkins.beedemo.local
+    #using volumes_from to force order
     volumes_from:
         - joc2
-        - apiTeam2
-        - mobileTeam2
+        - apiTeam
+        - mobileTeam
     volumes:
-        - data/haproxy:/haproxy-override
-    links:
-        - joc1
-        - joc2
-        - apiTeam1
-        - apiTeam2
-        - mobileTeam1
-        - mobileTeam2
-        - elasticsearch
-    restart: always
-ambassador:
-  image: cpuguy83/docker-grand-ambassador
-  volumes:
-    - "/var/run/docker.sock:/var/run/docker.sock"
-  command: -name {UPDATE_ME_TO_CONTAINING_DIRECTORY_NAME}_proxy_1
+        - ./data/haproxy:/haproxy-override
 slave1:
-    image: kmadel/jenkins-slave:1.0
+    extends:
+        file: common.yml
+        service: slave1
+    container_name: slave1
+    ports:
+        - "221:22"
     volumes:
-        - data:/data
-    restart: always
-slave2:
-    image: kmadel/jenkins-slave:1.0
-    volumes:
-        - data:/data
-    restart: always
+        - ./data/slave1:/home/jenkins
 slaveDocker1:
-    image: kmadel/dind-jenkins-slave:1.0
+    image: kmadel/dind-jenkins-slave:1.4
+    container_name: slaveDocker1
     volumes:
-        - data:/data
+        - ./data/slaveDocker1:/home/jenkins
+    ports:
+        - "1234"
     environment:
         - PORT=1234
     privileged: true
     restart: always
-    
