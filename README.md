@@ -12,7 +12,7 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
   - NOTE: Considering that both CJOC containers are deployed to the same Docker Host, HA doesn't make a lot of sense other than as an example
 - CJOC - availabe at http://{hostname}
   - Preconfigured JNLP port: `4001`
-  - You may override JNLP port with the `JENKINS_JNLP_PORT` environment variable, but you would need to modify the HA Proxy configuraiton as well
+  - You may override JNLP port with the `JENKINS_JNLP_PORT` environment variable, but you would need to modify the HA Proxy configuration as well
   - Preconfigured SSH port: `2021` - connect via http://{hostname}:2021 - HA Proxy is configured to forward to correct container
 - Client Masters (need to be manually attached to CJOC - see [CJOC Client Masters Documentation] (http://documentation.cloudbees.com/docs/cjoc-user-guide/_managing_cloudbees_jenkins_operations_center_tasks.html))
   - CJE Client Master URL for api-team: http://{hostname}/api-team/
