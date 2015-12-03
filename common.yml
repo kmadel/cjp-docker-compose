@@ -1,9 +1,10 @@
 joc:
-    image: kmadel/jenkins-operations-center:1.609.14.1
+    image: kmadel/jenkins-operations-center:1.625.2.2
     expose:
         - "2021"
     volumes:
         - ./data/joc:/var/jenkins_home
+        - ./data/backups:/backups
     environment:
         - JENKINS_JNLP_PORT=4001
         - JENKINS_SSH_PORT=2021
@@ -12,31 +13,33 @@ joc:
         - JENKINS_URL=http://jenkins.beedemo.local
     restart: always
 apiTeam:
-    image: kmadel/jenkins-enterprise:1.609.14.1
+    image: kmadel/jenkins-enterprise:1.625.2.2
     ports:
         - "83:8080"
     expose:
         - "2022"
     volumes:
         - ./data/api-team:/var/jenkins_home
+        - ./data/backups:/backups
     environment:
         - JENKINS_PREFIX=/api-team
         - JENKINS_SSH_PORT=2022
-        - JENKINS_URL=http://jenkins.beedemo.local
+        - JENKINS_URL=http://jenkins.beedemo.local/api-team/
         - SSHD_HOST=jenkins.beedemo.local
     restart: always
 mobileTeam:
-    image: kmadel/jenkins-enterprise:1.609.14.1
+    image: kmadel/jenkins-enterprise:1.625.2.2
     ports:
         - "85:8080"
     expose:
         - "2023"
     volumes:
         - ./data/mobile-team:/var/jenkins_home
+        - ./data/backups:/backups
     environment:
         - JENKINS_PREFIX=/mobile-team
         - JENKINS_SSH_PORT=2023
-        - JENKINS_URL=http://jenkins.beedemo.local
+        - JENKINS_URL=http://jenkins.beedemo.local/mobile-team/
         - SSHD_HOST=jenkins.beedemo.local
     restart: always
 proxy:
