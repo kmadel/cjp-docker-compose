@@ -56,7 +56,7 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
     - `exit` ssh and restart Docker Machine: `docker-machine restart`
 - Clone this repo anywhere under your `/Users` directory
 - If you would like to store your Jenkins `HOME` directory somewhere else you need to update the `docker-compose.yml` file:
-  - Update `data` under `joc1`` -> `volumes` to point to where you want your Jenkins `HOME` directory. 
+  - In `common.yml`, update `data` under `joc1` -> `volumes` to point to where you want your `jenkins_home` directory stored locally (relative to `docker-compose.yml`).
   NOTE: You could have several different directories configured for different demos and just change this to point to the demo you want to run.
 - Add entry that maps Docker Machine IP (`docker-machine ip beedemo-local`) to the hostname you are using in /etc/hosts: `192.168.99.100  jenkins.beedemo.local`
 - Start the docker containers in the Docker Compose file with: `docker-compose --x-networking up -d`
@@ -66,6 +66,9 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
   - connect masters, nothing to configure for CJOC, just create a new Client Master job
   - create slaves
   - create jobs
+ 
+####Migrating to a new docker-machine
+If docker machine goes haywire, migrating to a new one is a trivial process. Simply follow the steps above and update the machine name and IPs where necessary. Before starting `docker-compose`, be sure that host names are updated in `docker-compose.yml`, else you will lose client master connectivity.
 
 ###Use of Docker Networking
 A combination of the Docker Compose `container_name` option and the built in networking support introduced with Docker 1.9, allows for a completely generic HA Proxy configuration.  Previously the [ambassador pattern](https://docs.docker.com/engine/articles/ambassador_pattern_linking/) had been used with the Docker/Compose `links` feature to link the CJE client master containers to the CJOC HA cluster via the HA Proxy.  This was necessary because of limitations with the `links` feature - links are one-way, you can't link to a container that is already linked to another continaer - that is if `proxy` is linked to `apiTeam` container, then `apiTeam` can't link to `proxy`, thus the `ambassador` container.  Docker networking allows bi-directional linking, independed of the start-up order.  The trick in this configuration is to override the container name of the `proxy` container, allowing the necessary back-channel communication between CJOC and client masters to use the same URL (jenkins.beedemo.local) as specified for external access to CJOC.
