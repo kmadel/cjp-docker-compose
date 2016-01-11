@@ -1,5 +1,5 @@
 joc1:
-    image: kmadel/jenkins-operations-center:1.609.14.1
+    image: kmadel/jenkins-operations-center:1.625.3.1
     ports:
         - "81:8080"
     container_name: joc1
@@ -7,7 +7,7 @@ joc1:
         file: common.yml
         service: joc
 joc2:
-    image: kmadel/jenkins-operations-center:1.609.14.1
+    image: kmadel/jenkins-operations-center:1.625.3.1
     ports:
         - "82:8080"
     container_name: joc2
@@ -17,13 +17,13 @@ joc2:
     volumes_from:
         - joc1
 apiTeam:
-    image: kmadel/jenkins-enterprise:1.609.14.1
+    image: kmadel/jenkins-enterprise:1.625.3.1
     container_name: apiTeam
     extends:
         file: common.yml
         service: apiTeam
 mobileTeam:
-    image: kmadel/jenkins-enterprise:1.609.14.1
+    image: kmadel/jenkins-enterprise:1.625.3.1
     container_name: mobileTeam
     extends:
         file: common.yml
@@ -36,13 +36,11 @@ proxy:
     #the default Docker networking will place an entry for each container into every container's /etc/hosts file
     #the apiTeam and mobileTeam containers will get an entry that matches
     container_name: jenkins.beedemo.local
-    #using volumes_from to force order
+    #using volumes_from to force order, best if proxy is last
     volumes_from:
         - joc2
         - apiTeam
         - mobileTeam
-    volumes:
-        - ./data/haproxy:/haproxy-override
 slave1:
     extends:
         file: common.yml
