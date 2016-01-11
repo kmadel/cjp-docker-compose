@@ -53,7 +53,7 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
         sudo mount -t nfs -o noacl,async 192.168.99.1:/Users /Users
         ```
     - Make the `bootlocal.sh` file executable: `sudo chmod +x /var/lib/boot2docker/bootlocal.sh`
-    - exit ssh and restart Docker Machine: `docker-machine restart`
+    - `exit` ssh and restart Docker Machine: `docker-machine restart`
 - Clone this repo anywhere under your `/Users` directory
 - If you would like to store your Jenkins `HOME` directory somewhere else you need to update the `docker-compose.yml` file:
   - Update `data` under `joc1`` -> `volumes` to point to where you want your Jenkins `HOME` directory. 
