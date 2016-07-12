@@ -1,13 +1,15 @@
-joc1:
-    image: kmadel/jenkins-operations-center:1.625.3.1
+version: '2'
+services:
+  joc1:
+    image: hdharia/jenkins-operations-center:1.625.3.2
     ports:
         - "81:8080"
     container_name: joc1
     extends:
         file: common.yml
         service: joc
-joc2:
-    image: kmadel/jenkins-operations-center:1.625.3.1
+  joc2:
+    image: hdharia/jenkins-operations-center:1.625.3.2
     ports:
         - "82:8080"
     container_name: joc2
@@ -16,32 +18,33 @@ joc2:
         service: joc
     volumes_from:
         - joc1
-apiTeam:
-    image: kmadel/jenkins-enterprise:1.625.3.1
+  apiTeam:
+    image: hdharia/jenkins-enterprise:1.642.1.1
     container_name: apiTeam
     extends:
         file: common.yml
         service: apiTeam
-mobileTeam:
-    image: kmadel/jenkins-enterprise:1.625.3.1
+  mobileTeam:
+    image: hdharia/jenkins-enterprise:1.642.1.1
     container_name: mobileTeam
     extends:
         file: common.yml
         service: mobileTeam
-proxy:
+  proxy:
     extends:
         file: common.yml
         service: proxy
-    #this is the magic sauce - 
+    #this is the magic sauce -
     #the default Docker networking will place an entry for each container into every container's /etc/hosts file
     #the apiTeam and mobileTeam containers will get an entry that matches
-    container_name: jenkins.beedemo.local
+    container_name: jenkins.local
     #using volumes_from to force order, best if proxy is last
     volumes_from:
+        - joc1
         - joc2
         - apiTeam
         - mobileTeam
-slave1:
+  slave1:
     extends:
         file: common.yml
         service: slave1
@@ -50,7 +53,16 @@ slave1:
         - "221:22"
     volumes:
         - ./data/slave1:/home/jenkins
-slaveDocker1:
+  slave2:
+    extends:
+        file: common.yml
+        service: slave2
+    container_name: slave2
+    ports:
+        - "222:22"
+    volumes:
+        - ./data/slave2:/home/jenkins
+  slaveDocker1:
     image: kmadel/dind-jenkins-slave:1.4
     container_name: slaveDocker1
     volumes:
@@ -58,6 +70,5 @@ slaveDocker1:
     ports:
         - "1234"
     environment:
-        - PORT=1234
+        PORT: "1234"
     privileged: true
-    restart: always
