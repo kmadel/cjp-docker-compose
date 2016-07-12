@@ -33,7 +33,7 @@ Mostly specific to Mac OS X but should work on Windows and Linux as well.
   - current configuration requires Docker Compose version 1.5+
   - Requires Docker 1.9+ - using networking, built in bridge driver
 - create a Docker Machine (I use beedemo-local as `{machine_name}`)
-  - `docker-machine create --driver=virtualbox --virtualbox-memory=4096 {machine_name}`
+  - `docker-machine create --driver=virtualbox --virtualbox-memory=4096 --virtualbox-disk-size=61440 {machine_name}`
   - set env for newly created machine: `eval "$(docker-machine env)"`
 - Mac OS X ONLY: replace vboxfs (VirtualBox share) /Users share with nfs share [optional - but increases performance on Mac OS X]
   - Create NFS share on Mac OS X side:
